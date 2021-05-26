@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StyleSheet, Switch, View } from 'react-native';
 
 import { Header } from '../components/Header';
 import { MyTasksList } from '../components/MyTasksList';
@@ -12,6 +13,7 @@ interface Task {
 
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [isSwitched, setIsSwitched] = useState(false);
 
   function handleAddTask(newTaskTitle: string) {
     const task: Task = {
@@ -45,16 +47,31 @@ export function Home() {
   }
 
   return (
-    <>
-      <Header />
+    <View style={{backgroundColor: isSwitched ? '#191622' : '#fff', flex: 1}}>
+      <Header isSwitched={isSwitched} />
+      <Switch
+        style={styles.switch}
+        trackColor={{false: '#34313D', true: '#A09CB1'}}
+        thumbColor={isSwitched ? '#34313D' : '#A09CB1'}
+        onValueChange={setIsSwitched}
+        value={isSwitched}
+      />
+      <TodoInput isSwitched={isSwitched} addTask={handleAddTask} />
 
-      <TodoInput addTask={handleAddTask} />
-
-      <MyTasksList 
+      <MyTasksList
+        isSwitched={isSwitched}
         tasks={tasks} 
         onPress={handleMarkTaskAsDone} 
         onLongPress={handleRemoveTask} 
       />
-    </>
+    </View>
   )
 }
+
+const styles = StyleSheet.create({
+  switch: {
+    position: 'absolute',
+    top: 55,
+    right: 40
+  }
+});
